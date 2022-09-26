@@ -50,13 +50,6 @@ namespace sdl {
         double scaleconvert = stod(splitdata[5]);
         double offsetconvert = stod(splitdata[6]);
         bool endian = false;
-
-        //Check the split data
-        /*cout << canidconvert << " " << canlengthconvert << " " << splitdata[2] << " " << startbitconvert << " " << lengthconvert << " " <<
-        offsetconvert << " " << splitdata[7] << endl;
-         canlengthconvert;
-        */
-
         
         utils::canconfigure[number_of_lines].canId = canidconvert;
         utils::canconfigure[number_of_lines].canLength = canlengthconvert;
@@ -76,18 +69,6 @@ namespace sdl {
         utils::canConfigure canconfigure[number_of_lines].scale = scaleconvert;
         utils::canConfigure canconfigure[number_of_lines].offset = offsetconvert;
         utils::canConfigure canconfigure[number_of_lines].isBigendian = endian;
-        */
-
-
-        /*
-        cout << utils::canconfigure[number_of_lines].canId << " ";
-        cout << utils::canconfigure[number_of_lines].canLength << " ";
-        cout << utils::canconfigure[number_of_lines].name_variables << " ";
-        cout << utils::canconfigure[number_of_lines].startBit << " ";
-        cout << utils::canconfigure[number_of_lines].length << " ";
-        cout << utils::canconfigure[number_of_lines].scale << " ";
-        cout << utils::canconfigure[number_of_lines].offset << " ";
-        cout << utils::canconfigure[number_of_lines].isBigendian << endl;
         */
 
         number_of_lines++;
@@ -227,30 +208,37 @@ const Json::Value VehicleServiceImpl::getVehicleData(const Json::Value& root) {
     if (root.isMember("params")) {
         const Json::Value& params = root["params"];
         CanFrame frame;
+        // for (int i = 0; i < SIZE; i++){
+        // if (params.isMember(canconfigure[i].name_variables) && params[canconfigure[i].name_variables].asBool()) { //[-327680|327670]
+        //     response[json_keys::kResult][canconfigure[i].name_variables] = getValueFromCan(canconfigure[i]);
+        // }
+        // }
+
+
         // get SpeedData - Tuong duong line 10 va line 5 trong CAN_config1.txt
         
         if (params.isMember("DriveModeStatus") && params["DriveModeStatus"].asBool()) { //[-327680|327670]
-            if (getValueFromCan(utils::canconfigure[9]) == 0){//normal
-                if (getValueFromCan(utils::canconfigure[4]) >= 327670){
+            if (getValueFromCan(canconfigure[9]) == 0){//normal
+                if (getValueFromCan(canconfigure[4]) >= 327670){
                     response[json_keys::kResult]["SpeedData"] = 327670;          
                 }else {
-                    response[json_keys::kResult]["SpeedData"] = getValueFromCan(utils::canconfigure[4]);          
+                    response[json_keys::kResult]["SpeedData"] = getValueFromCan(canconfigure[4]);          
                 }
             }else { //reverse
-                if (getValueFromCan(utils::canconfigure[4]) >= 327680){
+                if (getValueFromCan(canconfigure[4]) >= 327680){
                     response[json_keys::kResult]["SpeedData"] = -327680;                              
                 }else {
-                    response[json_keys::kResult]["SpeedData"] = - getValueFromCan(utils::canconfigure[4]);          
+                    response[json_keys::kResult]["SpeedData"] = - getValueFromCan(canconfigure[4]);          
                 }
             }
         }
          // get MCUDCVoltage - Tuong duong line 4 trong CAN_config1.txt
         if (params.isMember("MCUDCVoltage") && params["MCUDCVoltage"].asBool()) { //[0|511.992]
-            response[json_keys::kResult]["MCUDCVoltage"] = getValueFromCan(utils::canconfigure[3]);
+            response[json_keys::kResult]["MCUDCVoltage"] = getValueFromCan(canconfigure[3]);
         }
         //get Side_Stand_status - Tuond duong line 1 trong CAN_config1.txt
         if (params.isMember("Side_Stand_status") && params["Side_Stand_status"].asBool()) { //[0|1]
-            if (getValueFromCan(utils::canconfigure[0]) == 0){
+            if (getValueFromCan(canconfigure[0]) == 0){
                 response[json_keys::kResult]["Side_Stand_status"] = "Side stand up";
             } else {
                 response[json_keys::kResult]["Side_Stand_status"] = "Side stand down";
@@ -268,7 +256,7 @@ const Json::Value VehicleServiceImpl::getVehicleData(const Json::Value& root) {
         
         // get BrakeStatus status - Tuong duong line 7 trong CAN_config1.txt 
         if (params.isMember("BrakeStatus") && params["BrakeStatus"].asBool()) { //[0|1]
-            if (getValueFromCan(utils::canconfigure[6]) == 0){
+            if (getValueFromCan(canconfigure[6]) == 0){
                 response[json_keys::kResult]["BrakeStatus"] = "Inactive";
             } else {
                 response[json_keys::kResult]["BrakeStatus"] = "Active";
@@ -276,33 +264,33 @@ const Json::Value VehicleServiceImpl::getVehicleData(const Json::Value& root) {
         }
          // git SpeedModeStatus  - Tuong duong line 9 trong CAN_config1.txt 
         if (params.isMember("SpeedModeStatus") && params["SpeedModeStatus"].asBool()) { //[0|7]
-            if (getValueFromCan(utils::canconfigure[8]) == 0){
+            if (getValueFromCan(canconfigure[8]) == 0){
                 response[json_keys::kResult]["SpeedModeStatus"] = "Neutral";
-            } else if (getValueFromCan(utils::canconfigure[8]) == 1){
+            } else if (getValueFromCan(canconfigure[8]) == 1){
                 response[json_keys::kResult]["SpeedModeStatus"] = "Mode 1(low speed mode) status";
-            } else if (getValueFromCan(utils::canconfigure[8]) == 2){
+            } else if (getValueFromCan(canconfigure[8]) == 2){
                 response[json_keys::kResult]["SpeedModeStatus"] = "Mode 2(middle speed mode) status"; 
-            } else if (getValueFromCan(utils::canconfigure[8]) == 3){
+            } else if (getValueFromCan(canconfigure[8]) == 3){
                 response[json_keys::kResult]["SpeedModeStatus"] = "Mode 3(high speed mode) status";
-            } else if (getValueFromCan(utils::canconfigure[8]) == 4){
+            } else if (getValueFromCan(canconfigure[8]) == 4){
                 response[json_keys::kResult]["SpeedModeStatus"] = "Invalid";
             }
         }
          // get TotalOdometerMileage - Tuong duong line 2 trong CAN_config1.txt
         if (params.isMember("TotalOdometerMileage") && params["TotalOdometerMileage"].asBool()) { //[0|429497000]
-            response[json_keys::kResult]["TotalOdometerMileage"] = getValueFromCan(utils::canconfigure[1]);
+            response[json_keys::kResult]["TotalOdometerMileage"] = getValueFromCan(canconfigure[1]);
         } 
         // get ThrottlePercentage - Tuong duong line 3 trong CAN_config1.txt
         if (params.isMember("ThrottlePercentage") && params["ThrottlePercentage"].asBool()) { //[0|100]
-            if (getValueFromCan(utils::canconfigure[2]) >= 100){
+            if (getValueFromCan(canconfigure[2]) >= 100){
                 response[json_keys::kResult]["ThrottlePercentage"] = 100;
             } else {
-                    response[json_keys::kResult]["ThrottlePercentage"] = getValueFromCan(utils::canconfigure[2]);
+                    response[json_keys::kResult]["ThrottlePercentage"] = getValueFromCan(canconfigure[2]);
             }
         }
          // get BrakeFaultStatus - Tuong duong line 6 trong CAN_config1.txt
         if (params.isMember("BrakeFaultStatus") && params["BrakeFaultStatus"].asBool()) { //[0|1]
-            if (getValueFromCan(utils::canconfigure[5]) == 0){
+            if (getValueFromCan(canconfigure[5]) == 0){
                 response[json_keys::kResult]["BrakeFaultStatus"] = "No Fault";
             } else {
                 response[json_keys::kResult]["BrakeFaultStatus"] = "Fault";
@@ -310,7 +298,7 @@ const Json::Value VehicleServiceImpl::getVehicleData(const Json::Value& root) {
         }
          // get PositionSensorFault - Tuong duong line 8 trong CAN_config1.txt
         if (params.isMember("PositionSensorFault") && params["PositionSensorFault"].asBool()) { //[0|1]
-            if (getValueFromCan(utils::canconfigure[7]) == 0){
+            if (getValueFromCan(canconfigure[7]) == 0){
                 response[json_keys::kResult]["PositionSensorFault"] = "No Fault";
             } else {
                 response[json_keys::kResult]["PositionSensorFault"] = "Fault";
@@ -319,7 +307,7 @@ const Json::Value VehicleServiceImpl::getVehicleData(const Json::Value& root) {
         
        // get DriveModeStatus - Tuong duong line 10 trong CAN_config1.txt
         if (params.isMember("DriveModeStatus") && params["DriveModeStatus"].asBool()) { //[0|7]
-            if (getValueFromCan(utils::canconfigure[9]) == 0){
+            if (getValueFromCan(canconfigure[9]) == 0){
                 response[json_keys::kResult]["DriveModeStatus"] = "NormalMode Status";
             }else {
                 response[json_keys::kResult]["DriveModeStatus"] = "Reverse Mode status";               

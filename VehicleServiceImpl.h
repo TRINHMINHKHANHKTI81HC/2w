@@ -55,7 +55,17 @@ class VehicleServiceImpl : public Service {
     template <size_t N>
     void splitString(string (&arr)[N], string str);
     void loadData();
-
+    static utils::canConfigure canconfigure[0];
+    static utils::canConfigure canconfigure[1];
+    static utils::canConfigure canconfigure[2];
+    static utils::canConfigure canconfigure[3];
+    static utils::canConfigure canconfigure[4];
+    static utils::canConfigure canconfigure[5];
+    static utils::canConfigure canconfigure[6];
+    static utils::canConfigure canconfigure[7];
+    static utils::canConfigure canconfigure[8];
+    static utils::canConfigure canconfigure[9];
+    
     // TODO: Change to member variable when we have configure file
 
     /*
@@ -71,7 +81,7 @@ class VehicleServiceImpl : public Service {
     static utils::canConfigure mCanConfigDriveMode;
     */
 
-    static utils::canConfigure mCanConfigSOCDisplay;
+    //static utils::canConfigure mCanConfigSOCDisplay;
 private:
     VehicleServiceCallbacks* mCallback;
     uint32_t mId;
