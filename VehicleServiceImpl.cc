@@ -14,7 +14,7 @@
 #include <sstream>
 #include "CanUtils.h"
 
-
+static int number_of_lines;
 
 
 using namespace std;
@@ -208,7 +208,7 @@ const Json::Value VehicleServiceImpl::getVehicleData(const Json::Value& root) {
     if (root.isMember("params")) {
         const Json::Value& params = root["params"];
         CanFrame frame;
-        // for (int i = 0; i < SIZE; i++){
+        for (int i = 0; i < SIZE; i++){
         // if (params.isMember(canconfigure[i].name_variables) && params[canconfigure[i].name_variables].asBool()) { //[-327680|327670]
         //     response[json_keys::kResult][canconfigure[i].name_variables] = getValueFromCan(canconfigure[i]);
         // }
